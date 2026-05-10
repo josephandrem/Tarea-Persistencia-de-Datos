@@ -1,62 +1,84 @@
 #include <iostream>
-#include <fstream>
+#include <fstream>  // Requerido para ofstream
 #include <string>
-#include <limits> // Necesaria para limpiar el buffer de forma segura
+#include <limits>   // Requerido para validaciones robustas
 
 using namespace std;
 
+// Funcion para evitar errores si el usuario ingresa letras en campos numericos
+void validarFlujo() {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
 int main() {
-    string nombre, carrera, nombreArchivo = "Datos.txt";
-    int edad, cantidad;
+    int opcion;
+    string nombre, carrera;
+    int edad;
     float promedio;
+    string nombreArchivo = "Datos.txt";
 
-    cout << "Ingrese la cantidad de estudiantes a registrar: ";
-    while (!(cin >> cantidad) || cantidad <= 0) {
-        cout << "Cantidad no valida. Ingrese un numero entero positivo: ";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-
-    for (int i = 0; i < cantidad; i++) {
-        cout << "\n--- Estudiante " << i + 1 << " ---" << endl;
+    do {
+        cout << "\n--- MENU INTERACTIVO ---" << endl;
+        cout << "1. Registrar Estudiante" << endl;
+        cout << "2. Salir" << endl;
+        cout << "Seleccione una opcion: ";
         
-        cin.ignore(); // Limpiar el salto de linea anterior
-        cout << "Nombre completo: ";
-        getline(cin, nombre);
-
-        cout << "Edad: ";
-        cin >> edad;
-        while (edad <= 0) {
-            cerr << "Edad invalida. Debe ser positiva: ";
-            cin >> edad;
+        if (!(cin >> opcion)) {
+            cout << "Opcion invalida. Intente de nuevo." << endl;
+            validarFlujo();
+            continue;
         }
 
-        cin.ignore();
-        cout << "Carrera: ";
-        getline(cin, carrera);
+        switch (opcion) {
+            case 1:
+                cin.ignore(); // Limpiar salto de linea previo
+                cout << "Nombre Completo: ";
+                getline(cin, nombre);
 
-        cout << "Promedio: ";
-        cin >> promedio;
-        while (promedio < 0 || promedio > 10) {
-            cerr << "Promedio invalido (0-10): ";
-            cin >> promedio;
+                cout << "Edad: ";
+                while (!(cin >> edad) || edad <= 0) {
+                    cout << "Error. Ingrese una edad valida: ";
+                    validarFlujo();
+                }
+
+                cin.ignore();
+                cout << "Carrera: ";
+                getline(cin, carrera);
+
+                cout << "Promedio (0-10): ";
+                while (!(cin >> promedio) || promedio < 0 || promedio > 10) {
+                    cout << "Error. Ingrese un promedio entre 0 y 10: ";
+                    validarFlujo();
+                }
+
+                // USO DE OFSTREAM, IOS::APP Y CLOSE()
+                {
+                    ofstream archivo;
+                    archivo.open(nombreArchivo, ios::app); // Persistencia (modo agregar)
+                    
+                    if (archivo.is_open()) {
+                        archivo << "Estudiante: " << nombre << " | "
+                                << "Edad: " << edad << " | "
+                                << "Carrera: " << carrera << " | "
+                                << "Promedio: " << promedio << endl;
+                        
+                        archivo.close(); // REQUERIMIENTO: Cierre manual
+                        cout << "[!] Informacion guardada permanentemente." << endl;
+                    } else {
+                        cout << "Error al abrir el archivo." << endl;
+                    }
+                }
+                break;
+
+            case 2:
+                cout << "Finalizando programa..." << endl;
+                break;
+
+            default:
+                cout << "Opcion fuera de rango." << endl;
         }
+    } while (opcion != 2);
 
-        // GUARDAR DATOS (Dentro del ciclo para no perder registros)
-        ofstream archivo(nombreArchivo, ios::app); 
-        if (archivo.is_open()) {
-            archivo << "Nombre: " << nombre << "\n"
-                    << "Edad: " << edad << "\n"
-                    << "Carrera: " << carrera << "\n"
-                    << "Promedio: " << promedio << "\n"
-                    << "------------------------" << endl;
-            archivo.close(); // REQUERIMIENTO: close()
-            cout << "Registro guardado en el archivo." << endl;
-        } else {
-            cerr << "Error: No se pudo abrir el archivo." << endl;
-        }
-    }
-
-    cout << "\nProceso finalizado correctamente." << endl;
     return 0;
 }
