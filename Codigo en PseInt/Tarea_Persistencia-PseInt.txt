@@ -1,0 +1,39 @@
+Algoritmo GestionEstudiantesArchivo
+    Definir nombre, carrera Como Cadena
+    Definir edad, cantidad, i Como Entero
+    Definir promedio Como Real
+    
+    Escribir "Ingrese la cantidad de estudiantes a registrar:"
+    Leer cantidad
+    
+    Para i <- 1 Hasta cantidad Con Paso 1 Hacer
+        Escribir "--- Estudiante ", i, " ---"
+        
+        Escribir "Ingrese el nombre:"
+        Leer nombre
+        
+        Repetir
+            Escribir "Ingrese la edad:"
+            Leer edad
+            Si edad <= 0 Entonces
+                Escribir "Error: La edad debe ser positiva."
+            FinSi
+        Hasta Que edad > 0
+        
+        Escribir "Ingrese la carrera:"
+        Leer carrera
+        
+        Repetir
+            Escribir "Ingrese el promedio (0-10):"
+            Leer promedio
+            Si promedio < 0 O promedio > 10 Entonces
+                Escribir "Error: Promedio fuera de rango."
+            FinSi
+        Hasta Que promedio >= 0 Y promedio <= 10
+        
+        // Simulación de persistencia
+        Escribir "Guardando datos de ", nombre, " en Datos.txt..."
+    FinPara
+    
+    Escribir "Proceso finalizado."
+FinAlgoritmo
