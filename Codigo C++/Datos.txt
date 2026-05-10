@@ -1,0 +1,2 @@
+Estudiante: Juan Perez | Edad: 18 | Carrera: Software | Promedio: 9.5
+Estudiante: Karla Perez | Edad: 19 | Carrera: Software | Promedio: 8.5
